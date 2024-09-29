@@ -29,13 +29,10 @@ async def create_event(event_in: EventCreate, db: AsyncSession = Depends(with_se
 
 @router.get("/{event_id}", response_model=Event)
 async def read_event(event_id: int, db: AsyncSession = Depends(with_session)):
-    try:
-        event = await event_manager.get(db, event_id)
-        if not event:
-            raise HTTPException(status_code=404, detail="Event not found")
-        return event
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    event = await event_manager.get(db, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return event
 
 
 @router.put("/{event_id}", response_model=Event)
@@ -44,10 +41,10 @@ async def update_event(
     event_in: EventUpdate,
     db: AsyncSession = Depends(with_session),
 ):
+    db_event = await event_manager.get(db, event_id)
+    if not db_event:
+        raise HTTPException(status_code=404, detail="Event not found")
     try:
-        db_event = await event_manager.get(db, event_id)
-        if not db_event:
-            raise HTTPException(status_code=404, detail="Event not found")
         return await event_manager.update(db, db_event, event_in)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

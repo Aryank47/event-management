@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from typing import AsyncGenerator
+from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
@@ -104,3 +105,18 @@ async def client(session: AsyncSession):
             },
         }
         yield client
+
+
+@pytest.fixture(scope="session", autouse=True)
+def mock_keycloak_user_creation():
+    with patch(
+        "event_manager.api.routes.user.create_keycloak_user", new_callable=AsyncMock
+    ) as mock_create_user:
+        with patch(
+            "event_manager.api.routes.user.delete_keycloak_user", new_callable=AsyncMock
+        ) as mock_delete_user:
+            # Set up the mocks
+            mock_create_user.return_value = "26061df0-0f9f-4a31-a6c5-512d01b216b2"
+            mock_delete_user.return_value = None
+
+            yield

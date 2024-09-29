@@ -11,32 +11,59 @@ faker = Faker()
 @pytest.mark.asyncio
 async def test_create_user(client: AsyncClient):
     user_data = {
-        "name": faker.name(),
-        "email": faker.email(),
-        "country_code": faker.country_code(),
-        "phone_number": faker.numerify("##########"),
+        "user_in": {
+            "name": faker.name(),
+            "email": faker.email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "username": "test",
+        },
+        "company_in": {
+            "name": faker.company(),
+            "address": faker.address(),
+            "email": faker.company_email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "registration_number": faker.numerify("##########"),
+        },
     }
 
-    response = await client.post(base_route, json=user_data)
+    response = await client.post(
+        f"{base_route}?password=test&is_admin=true", json=user_data
+    )
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == user_data["name"]
-    assert data["email"] == user_data["email"]
-    assert data["country_code"] == user_data["country_code"]
-    assert data["phone_number"] == user_data["phone_number"]
+    assert data["name"] == user_data["user_in"]["name"]
+    assert data["email"] == user_data["user_in"]["email"]
+    assert data["country_code"] == user_data["user_in"]["country_code"]
+    assert data["phone_number"] == user_data["user_in"]["phone_number"]
+    assert data["username"] == user_data["user_in"]["username"]
     assert data["id"]
 
 
 @pytest.mark.asyncio
 async def test_get_all_users(client: AsyncClient):
-    user_data = user_data = {
-        "name": faker.name(),
-        "email": faker.email(),
-        "country_code": faker.country_code(),
-        "phone_number": faker.numerify("##########"),
+    user_data = {
+        "user_in": {
+            "name": faker.name(),
+            "email": faker.email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "username": "test",
+        },
+        "company_in": {
+            "name": faker.company(),
+            "address": faker.address(),
+            "email": faker.company_email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "registration_number": faker.numerify("##########"),
+        },
     }
 
-    response = await client.post(base_route, json=user_data)
+    response = await client.post(
+        f"{base_route}?password=test&is_admin=true", json=user_data
+    )
     assert response.status_code == 200
 
     response = await client.get(base_route)
@@ -48,14 +75,27 @@ async def test_get_all_users(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_update_user(client: AsyncClient, session: AsyncSession):
-    user_data = user_data = {
-        "name": faker.name(),
-        "email": faker.email(),
-        "country_code": faker.country_code(),
-        "phone_number": faker.numerify("##########"),
+    user_data = {
+        "user_in": {
+            "name": faker.name(),
+            "email": faker.email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "username": "test",
+        },
+        "company_in": {
+            "name": faker.company(),
+            "address": faker.address(),
+            "email": faker.company_email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "registration_number": faker.numerify("##########"),
+        },
     }
 
-    response = await client.post(base_route, json=user_data)
+    response = await client.post(
+        f"{base_route}?password=test&is_admin=true", json=user_data
+    )
     assert response.status_code == 200
     data = response.json()
     user_id = data["id"]
@@ -70,14 +110,27 @@ async def test_update_user(client: AsyncClient, session: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_delete_user(client: AsyncClient):
-    user_data = user_data = {
-        "name": faker.name(),
-        "email": faker.email(),
-        "country_code": faker.country_code(),
-        "phone_number": faker.numerify("##########"),
+    user_data = {
+        "user_in": {
+            "name": faker.name(),
+            "email": faker.email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "username": "test",
+        },
+        "company_in": {
+            "name": faker.company(),
+            "address": faker.address(),
+            "email": faker.company_email(),
+            "country_code": faker.country_code(),
+            "phone_number": faker.numerify("##########"),
+            "registration_number": faker.numerify("##########"),
+        },
     }
 
-    response = await client.post(base_route, json=user_data)
+    response = await client.post(
+        f"{base_route}?password=test&is_admin=true", json=user_data
+    )
     assert response.status_code == 200
     data = response.json()
     user_id = data["id"]
